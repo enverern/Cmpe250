@@ -15,7 +15,7 @@ public class Employee {
         this.promotion_point = 0;
         this.bonus = 0;
     }
-
+    // getters
     public String getName() {
         return name;
     }
@@ -32,6 +32,7 @@ public class Employee {
         return promotion_point;
     }
 
+    // update the promotion point and bonus of an employee
     public void updatePromotion_bonus(int promotion_pt, int bns) {
         promotion_point += promotion_pt;
         if (bns >= 0){
@@ -39,6 +40,7 @@ public class Employee {
         }
     }
 
+    // promote an employee if they have enough promotion points
     public void promote(String current_position, String new_position) {
         if (position.equals(current_position) && new_position.equals("COOK") && promotion_point >= 3) {
             position = new_position;

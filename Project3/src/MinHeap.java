@@ -1,0 +1,137 @@
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+// I got the basic of the structure from PS session and I modified it to fit my project
+public class MinHeap<T extends Song> {
+    private final List<T> heap;
+    private final Comparator<T> comparator;
+    private final Comparator<T> comparator1;
+    private final Map<Integer, Integer> indexMap;
+
+    // it works with the comparators which are used to compare the different scores of the songs depending on the category
+    // also, to easily access the index of the song in the heap in removing, I used hashmap
+    public MinHeap(Comparator<T> comparator, Comparator<T> comparator1) {
+        this.heap = new ArrayList<>();
+        this.comparator = comparator;
+        this.comparator1 = comparator1;
+        this.indexMap = new HashMap<>();
+    }
+
+    public int size() {
+        return heap.size();
+    }
+
+    public void insert(T element) {
+        heap.add(element);
+        int index = heap.size() - 1;
+        indexMap.put(element.getId(), index);
+        heapifyUp(index);
+    }
+
+    // remove function to delete specific song from heap and update the heap (it is able to both heapifydown and heapifyup)
+    // finding the index of the song is handled by hashmap
+    public void remove(T element) {
+        Integer id = element.getId();
+        int index = indexMap.getOrDefault(id, -1);
+        if (index != -1) {
+            heap.set(index, heap.get(heap.size() - 1));
+            indexMap.put(heap.get(index).getId(), index);
+            indexMap.remove(id);
+            heapifyUp(index);
+            heapifyDown(index);
+            heap.remove(heap.size() - 1);
+        }
+    }
+
+    private void heapifyUp(int index) {
+        while (index > 0) {
+            int parentIndex = (index - 1) / 2;
+            if (comparator.compare(heap.get(index), heap.get(parentIndex)) > 0 ||
+                    (comparator.compare(heap.get(index), heap.get(parentIndex)) == 0 &&
+                            comparator1.compare(heap.get(index), heap.get(parentIndex)) > 0)) {
+                swap(index, parentIndex);
+                index = parentIndex;
+            } else {
+                break;
+            }
+        }
+    }
+
+    private void swap(int i, int j) {
+        T temp = heap.get(i);
+        heap.set(i, heap.get(j));
+        heap.set(j, temp);
+
+        // update the indices in the HashMap after the swap
+        indexMap.put(heap.get(i).getId(), i);
+        indexMap.put(heap.get(j).getId(), j);
+    }
+
+    public T getMin() {
+        if (isEmpty()) {
+            return null;
+        }
+        return heap.get(0);
+    }
+
+    public T extractMin() {
+        if (isEmpty()) {
+            return null;
+        }
+
+        T min = heap.get(0);
+        indexMap.remove(min.getId());
+        int lastIdx = heap.size() - 1;
+        heap.set(0, heap.get(lastIdx));
+        indexMap.put(heap.get(0).getId(), 0);
+        heap.remove(lastIdx);
+
+
+        //indexMap.put(min.getId(), 0);
+        heapifyDown(0);
+
+        return min;
+    }
+
+    private void heapifyDown(int index) {
+        int leftChildIdx = 2 * index + 1;
+        int rightChildIdx = 2 * index + 2;
+        int smallest = index;
+
+
+        smallest = getSmallest(leftChildIdx, smallest);
+
+        smallest = getSmallest(rightChildIdx, smallest);
+
+        if (smallest != index) {
+            swap(index, smallest);
+            heapifyDown(smallest);
+        }
+    }
+
+    private int getSmallest(int rightChildIdx, int smallest) {
+        if (rightChildIdx < heap.size() && ((comparator.compare(heap.get(rightChildIdx), heap.get(smallest)) > 0) || (comparator.compare(heap.get(rightChildIdx), heap.get(smallest)) == 0 && comparator1.compare(heap.get(rightChildIdx), heap.get(smallest)) > 0))) {
+            smallest = rightChildIdx;
+        }
+        return smallest;
+    }
+
+    public T get(int i) {
+        return heap.get(i);
+    }
+
+    public boolean isEmpty() {
+        return heap.isEmpty();
+    }
+
+    public ArrayList<Integer> getIds() {
+        ArrayList<Integer> ids = new ArrayList<>();
+        for (T element : heap) {
+            ids.add((element).getId());
+        }
+        return ids;
+    }
+}

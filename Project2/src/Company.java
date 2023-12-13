@@ -1,16 +1,18 @@
 import java.util.ArrayList;
 public class Company {
-    private final HashTable<String, Branch> branches;
+    private HashTable<String, Branch> branches;
     public ArrayList<String> log = new ArrayList<String>();
 
     public Company() {
         this.branches = new HashTable<>();
     }
 
+    // to get events
     public ArrayList<String> getLog() {
         return log;
     }
 
+    // add a new branch and employee (used in both creation and updating of the company)
     public void addemployee(String city, String district, String name, String position) {
         Branch branch = branches.get(city + district);
         if (branch == null) {
@@ -24,6 +26,7 @@ public class Company {
         branch.resetLog();
     }
 
+    // remove an employee from a branch
     public void remove_employee(String city, String district, String name) {
         Branch branch = branches.get(city + district);
         if (branch != null) {
@@ -38,6 +41,7 @@ public class Company {
         }
     }
 
+    // update the performance of an employee and check if they should be promoted or dismissed
     public void performanceUpdate(String city, String district, String name, int score) {
         Branch branch = branches.get(city + district);
         if (branch != null) {
@@ -50,6 +54,7 @@ public class Company {
         }
     }
 
+    // print the monthly bonuses of a branch
     public void print_monthly_bonuses(String city, String district) {
         Branch branch = branches.get(city + district);
         if (branch != null) {
@@ -59,6 +64,7 @@ public class Company {
         }
     }
 
+    // print the overall bonuses of a branch
     public void print_overall_bonuses(String city, String district) {
         Branch branch = branches.get(city + district);
         if (branch != null) {
@@ -68,6 +74,7 @@ public class Company {
         }
     }
 
+    // print the manager of a branch
     public void print_manager(String city, String district) {
         Branch branch = branches.get(city + district);
         if (branch != null) {
@@ -77,6 +84,8 @@ public class Company {
             }
         }
     }
+
+    // reset the monthly bonuses of all branches
     public void reset_monthly_bonuses() {
         for (Branch branch : branches.values()) {
             branch.reset_monthly_bonuses();

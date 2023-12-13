@@ -23,21 +23,28 @@ public class Branch {
         this.district = district;
         this.employees = new HashTable<>();
         this.manager = null;
+        this.num_of_cashiers = 0;
+        this.num_of_cooks = 0;
+        this.num_of_couriers = 0;
+        this.monthly_bonuses = 0;
+        this.overall_bonuses = 0;
     }
 
     public HashTable<String, Employee> getEmployees() {
         return employees;
     }
 
+    // to get the manager of the branch
     public Employee getManager() {
         return manager;
     }
 
+    // to get the overall bonuses of the branch
     public int getTotalBonuses() {
         return overall_bonuses;
     }
 
-
+    // update the performance of an employee and check if they collected enough points to be promoted or dismissed
     public void updateScore(String name, int score) {
         Employee employee = employees.get(name);
         if (employee != null) {
@@ -77,27 +84,29 @@ public class Branch {
             branch_log.add("There is no such employee.");
         }
     }
+    // to add the bonus due to the not able to leave employees
     public void compensationBonus(int bonus) {
         monthly_bonuses += bonus;
         overall_bonuses += bonus;
     }
+    // to reset the monthly bonuses
     public void reset_monthly_bonuses() {
         monthly_bonuses = 0;
-        //for (Employee employee : employees.values()) {
-        //    employee.updatePromotion_bonus(0, 0);
-        //}
     }
+    // to get the monthly bonuses
     public int get_monthly_bonuses() {
         return monthly_bonuses;
     }
-
+    // to get the events of the branch
     public ArrayList<String> getLog() {
         return branch_log;
     }
-
+    // to reset the events of the branch
     public void resetLog() {
         branch_log.clear();
     }
+    // to add an employee to the branch also handle the situtations of not completed
+    // promotions and dismissions of the employees due to the limited number of employees
     public void addEmployee(Employee employee) {
         if (employees.get(employee.getName()) != null){
             branch_log.add("Existing employee cannot be added again.");
@@ -165,6 +174,9 @@ public class Branch {
         }
     }
 
+    // to dismiss an employee from the branch
+    // also handle the situtations of not completed dismissions
+    // of the employees due to the limited number of employees
     public void dismission_check(String name) {
         Employee employee = employees.get(name);
         if (employee != null) {
@@ -192,6 +204,8 @@ public class Branch {
         }
     }
 
+    // to promote an employee from the branch also handle the situtations of not completed
+    // dismissions due to the limited number of employees
     public void promotion_check(String name) {
         Employee employee = employees.get(name);
         if (employee != null) {
@@ -219,6 +233,8 @@ public class Branch {
             }
         }
     }
+    // to remove an employee from the branch
+    // handle the situtations of giving promotion bonus to the couldnt leave employees
     public ArrayList<String> removeEmployee(Employee employee) {
         String e_position = employee.getPosition();
         switch (e_position) {
@@ -264,6 +280,8 @@ public class Branch {
         }
         return branch_log;
     }
+
+    // to make an employee manager
     private void make_manager(Employee new_manager){
         employees.remove(manager.getName());
         new_manager.promote("COOK", "MANAGER");
